@@ -1,0 +1,1 @@
+<% for (var chunk in htmlWebpackPlugin.files.chunks) { %><script type="text/javascript" src="asset/<%=htmlWebpackPlugin.files.chunks[chunk].entry %>"></script><% } %>
