@@ -1,0 +1,9 @@
+# vscode
+/.vscode
+
+# dependencies
+/node_modules
+
+.sass-cache/
+*.css.map
+npm-debug.log*
