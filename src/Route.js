@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import matchPath from './matchPath'
-import {changeLocation,addLocationComponent} from './RouterRedux'
+import {changeLocation, addLocationComponent} from './RouterRedux'
 
 class Route extends Component {
 
@@ -12,25 +12,31 @@ class Route extends Component {
         strict: PropTypes.bool,
         component: PropTypes.func,
         children: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
-        location: PropTypes.object
+        location: PropTypes.object,
+        retain: PropTypes.bool
     }
 
     static contextTypes = {
-        router: PropTypes.shape({
-            history: PropTypes.object.isRequired
-        })
+        router: PropTypes.shape({history: PropTypes.object.isRequired})
     }
 
-    _handleAddLocationComponent(){
-        const {children, component, path} = this.props;
+    _handleAddLocationComponent() {
+        const {children, component, path, keepParams} = this.props;
         const {history, route} = this.context.router;
         const pathObj = matchPath(history.location.pathname, {path})
-        if(pathObj && history.location.pathname == pathObj.url){
-            const locationItem = {
+
+        if (pathObj && history.location.pathname == pathObj.url) {
+
+            let locationItem = {
                 pathname: history.location.pathname,
                 component: this.props.component,
                 match: pathObj
             }
+
+            if (keepParams && keepParams != "") {
+                locationItem["keepParams"] = keepParams
+            }
+
             this
                 .props
                 .onAddLocationComponent(locationItem);
@@ -38,7 +44,13 @@ class Route extends Component {
     }
 
     componentWillMount() {
-        this._handleAddLocationComponent()
+        this._handleAddLocationComponent();
+
+        const {history} = this.context.router
+        this.unlisten = history.listen(() => {
+            console.log(1111)
+            this._handleAddLocationComponent();
+        })
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
@@ -62,6 +74,6 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-Route = connect(mapStateToProps,mapDispatchToProps)(Route)
+Route = connect(mapStateToProps, mapDispatchToProps)(Route)
 
 export default Route;

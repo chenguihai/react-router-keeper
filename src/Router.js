@@ -1,7 +1,8 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
-import {changeLocation} from './RouterRedux'
+import matchPath from './matchPath'
+import {initLocation, changeLocation} from './RouterRedux'
 
 class Router extends Component {
     static propTypes = {
@@ -27,11 +28,32 @@ class Router extends Component {
         }
     }
 
-    _handleChangeLocation(){
+    _handleInitLocation() {
         const {history, locations} = this.props
         const locationItem = {
             pathname: history.location.pathname
         }
+
+        this
+            .props
+            .onInitLocation(locationItem);
+    }
+
+    _handleChangeLocation() {
+        const {history, locations} = this.props
+        let locationItem = {
+            pathname: history.location.pathname
+        }
+
+        locations.map((item, index) => {
+
+            let pathObj = matchPath(history.location.pathname, item.match.path);
+            if (pathObj && pathObj != null) {
+                locationItem.match = pathObj;
+                locationItem.keepParams = item.keepParams;
+            }
+        })
+
         this
             .props
             .onChangeLocation(locationItem);
@@ -39,8 +61,8 @@ class Router extends Component {
 
     componentWillMount() {
         const {history, locations} = this.props
-        if(locations.length <= 0){
-            this._handleChangeLocation();
+        if (locations.length <= 0) {
+            this._handleInitLocation();
         }
         this.unlisten = history.listen(() => {
             this._handleChangeLocation();
@@ -63,6 +85,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        onInitLocation: (locationItem) => {
+            dispatch(initLocation(locationItem))
+        },
         onChangeLocation: (locationItem) => {
             dispatch(changeLocation(locationItem))
         }
