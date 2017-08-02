@@ -50,7 +50,7 @@ export default function (state, action) {
             }
 
             const addAction = action.locationItem;
-            const addActionParams = addAction.match.params;
+            const addActionParams = addAction.match ? addAction.match.params : "";
 
             let locationIndex = -1
 
