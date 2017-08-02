@@ -48,7 +48,6 @@ class Route extends Component {
 
         const {history} = this.context.router
         this.unlisten = history.listen(() => {
-            console.log(1111)
             this._handleAddLocationComponent();
         })
     }

@@ -24,7 +24,7 @@ export default function (state, action) {
                 ...state
             }
             const changAction = action.locationItem;
-            const changActionParams = changAction.match.params;
+            const changActionParams = changAction.match ? changAction.match.params : "";
 
             changeState
                 .locations
