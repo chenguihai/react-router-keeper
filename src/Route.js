@@ -21,7 +21,7 @@ class Route extends Component {
     }
 
     _handleAddLocationComponent() {
-        const {children, component, path, keepParams} = this.props;
+        const {children, component, path, keepParams, isClose, routeName} = this.props;
         const {history, route} = this.context.router;
         const pathObj = matchPath(history.location.pathname, {path})
 
@@ -37,6 +37,16 @@ class Route extends Component {
                 locationItem["keepParams"] = keepParams
             }
 
+            debugger
+
+            if (isClose != undefined) {
+                locationItem["isClose"] = isClose
+            }else{
+                locationItem["isClose"] = true
+            }
+
+            locationItem["routeName"] = ((routeName && routeName != '') ? routeName : (pathObj.params.routeName ? pathObj.params.routeName : '...'))
+
             this
                 .props
                 .onAddLocationComponent(locationItem);
@@ -50,10 +60,6 @@ class Route extends Component {
         this.unlisten = history.listen(() => {
             this._handleAddLocationComponent();
         })
-    }
-
-    componentWillReceiveProps(nextProps, nextContext) {
-        this._handleAddLocationComponent()
     }
 
     render() {

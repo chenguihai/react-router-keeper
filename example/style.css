@@ -151,7 +151,7 @@ a {
     padding: 10px 0px 20px;
     text-align: center;
     border-bottom: 1px solid #ccc;
-    margin: 10px 30px;
+    margin: 10px 30px 0px;
 }
 
 .link a {
@@ -166,6 +166,65 @@ a {
     text-align: center;
 }
 
-.d-none{
+.d-none {
     display: none;
+}
+
+.route-tab {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    border-bottom: 1px solid #ccc;
+}
+
+.route-tab .route-tab-btn {
+    padding: 15px 10px;
+    cursor: pointer;
+}
+
+.route-tab .route-tab-btn .route-tab-arrow {
+    font-size: 14px;
+    vertical-align: sub;
+}
+
+.route-tab .route-tab-box {
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    overflow: auto;
+}
+
+.route-tab .route-tab-item {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    position: relative;
+}
+
+.route-tab .route-tab-item .route-tab-title {
+    white-space: pre;
+    padding: 15px 5px 15px 15px;
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+}
+
+.route-tab .route-tab-item .route-tab-close {
+    padding: 14px 15px 14px 5px;
+    font-size: 14px;
+    vertical-align: sub;
+}
+
+.route-tab .route-tab-item .route-tab-title,
+.route-tab .route-tab-item .route-tab-close {
+    color: #9E9E9E;
+    cursor: pointer;
+}
+
+.route-tab .route-tab-item.active .route-tab-title,
+.route-tab .route-tab-item.active .route-tab-close {
+    color: #607D8B;
 }

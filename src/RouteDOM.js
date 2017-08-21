@@ -28,7 +28,7 @@ class RouteDOM extends Component {
         };
 
         return (
-            <article>
+            <section>
                 {locations.map((item, index) => {
                     props = {
                         ...props,
@@ -40,7 +40,7 @@ class RouteDOM extends Component {
                         <div key={index}>{React.createElement(item.component, props)}</div>
                     )
                 })}
-            </article>
+            </section>
         );
     }
 }

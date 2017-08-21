@@ -6,6 +6,7 @@ import {initLocation, changeLocation} from './RouterRedux'
 
 class Router extends Component {
     static propTypes = {
+        basename: PropTypes.string,
         locations: PropTypes.array,
         history: PropTypes.object.isRequired,
         children: PropTypes.node

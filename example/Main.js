@@ -19,8 +19,8 @@ class AppMain extends Component {
                 <div className="link">
                     <a href="#/">TEST1</a>
                     <a href="#/test2|hello_test2">TEST2</a>
-                    <a href="#/test3|keep|hello_test3">TEST3</a>
-                    <a href="#/test3|keep|hello_test4">TEST4</a>
+                    <a href="#/test3|keep|hello_test3|Hello3">TEST3(Hello3)</a>
+                    <a href="#/test3|keep|hello_test4|Hello4">TEST3(Hello4)</a>
                 </div>
                 {AppRoutes}
             </div>
