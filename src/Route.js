@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import matchPath from './matchPath'
-import {changeLocation, addLocationComponent} from './RouterRedux'
+import {changeLocation, addLocation} from './RouterRedux'
 
 class Route extends Component {
 
@@ -20,8 +20,8 @@ class Route extends Component {
         router: PropTypes.shape({history: PropTypes.object.isRequired})
     }
 
-    _handleAddLocationComponent() {
-        const {children, component, path, keepParams, isClose, routeName} = this.props;
+    _handleAddLocation() {
+        const {children, component, path, keepParam, isClose, routeName} = this.props;
         const {history, route} = this.context.router;
         const pathObj = matchPath(history.location.pathname, {path})
 
@@ -33,11 +33,9 @@ class Route extends Component {
                 match: pathObj
             }
 
-            if (keepParams && keepParams != "") {
-                locationItem["keepParams"] = keepParams
+            if (keepParam && keepParam != "") {
+                locationItem["keepParam"] = keepParam
             }
-
-            debugger
 
             if (isClose != undefined) {
                 locationItem["isClose"] = isClose
@@ -49,16 +47,16 @@ class Route extends Component {
 
             this
                 .props
-                .onAddLocationComponent(locationItem);
+                .onAddLocation(locationItem);
         }
     }
 
     componentWillMount() {
-        this._handleAddLocationComponent();
+        this._handleAddLocation();
 
         const {history} = this.context.router
         this.unlisten = history.listen(() => {
-            this._handleAddLocationComponent();
+            this._handleAddLocation();
         })
     }
 
@@ -73,8 +71,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onAddLocationComponent: (locationItem) => {
-            dispatch(addLocationComponent(locationItem))
+        onAddLocation: (locationItem) => {
+            dispatch(addLocation(locationItem))
         }
     }
 }

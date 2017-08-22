@@ -45,19 +45,14 @@ class Router extends Component {
         let locationItem = {
             pathname: history.location.pathname
         }
-
         locations.map((item, index) => {
-
             let pathObj = matchPath(history.location.pathname, item.match.path);
             if (pathObj && pathObj != null) {
                 locationItem.match = pathObj;
-                locationItem.keepParams = item.keepParams;
+                locationItem.keepParam = item.keepParam;
             }
         })
-
-        this
-            .props
-            .onChangeLocation(locationItem);
+        this.props.onChangeLocation(locationItem);
     }
 
     componentWillMount() {

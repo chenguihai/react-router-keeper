@@ -1,110 +1,155 @@
 const INIT_LOCATION = '@@router/INIT_LOCATION'
 const CHANGE_LOCATION = '@@router/CHANGE_LOCATION'
 const DELETE_LOCATION = '@@router/DELETE_LOCATION'
-const ADD_LOCATION_COMPONENT = '@@router/ADD_LOCATION_COMPONENT'
+const ADD_LOCATION = '@@router/ADD_LOCATION'
+
+let locationItem, keepParam, urlStack, urlStackIndex = -1, locations;
 
 export default function (state, action) {
     if (!state) {
         state = {
-            locations: []
+            locations: [],
+            urlStack:[]
         }
     }
 
     switch (action.type) {
         case INIT_LOCATION:
-            //初始化路由
+            //初始化
             return {
                 locations: [
                     {
                         pathname: action.locationItem.pathname,
                         isactive: true
                     }
-                ]
+                ],
+                urlStack:[]
             }
         case CHANGE_LOCATION:
-            //切换路由
-            let changeState = {
-                ...state
-            }
-            const changAction = action.locationItem;
-            const changActionParams = changAction.match ? changAction.match.params : "";
+            //切换
+            locationItem = action.locationItem;
+            keepParam = locationItem.keepParam;
+            urlStack = [...state.urlStack];
+            locations = [];
 
-            changeState
-                .locations
-                .map((item, index) => {
-                    if (item.keepParams && item.keepParams == changAction.keepParams) {
-                        const keepParamVal = item.match.params[changAction.keepParams];
-                        if (keepParamVal == changActionParams[changAction.keepParams]) {
-                            item.isactive = true
-                        } else {
-                            item.isactive = false
-                        }
-                    } else if (item.pathname == changAction.pathname) {
-                        item.isactive = true
-                    } else {
-                        item.isactive = false
+            //修改路由激活状态
+            state.locations.map((item, index) => {
+                const itemParams = item.match ? item.match.params : '';
+                const actionParam = locationItem.match ? locationItem.match.params : '';
+                let newItem = {...item};
+                
+                if (item.keepParam && item.keepParam == locationItem.keepParam) {
+                    if (itemParams[keepParam] == actionParam[keepParam]) {
+                        newItem.isactive = true;
+                    }else{
+                        newItem.isactive = false;
                     }
-                }) 
-            return changeState
-        case DELETE_LOCATION:
-            //删除路由
+                }else if(item.pathname == locationItem.pathname){
+                    newItem.isactive = true;
+                }else{
+                    newItem.isactive = false;
+                }
+                locations.push(newItem);
+            })
+
+            debugger
+
+            //修改路由序列
+            state.urlStack.map((urlItem, index) => {
+                if(urlItem == locationItem.pathname){
+                    urlStackIndex = index;
+                }
+            })
+
+			if(urlStackIndex >= 0){
+                urlStack.splice(urlStackIndex,1);
+                urlStack.push(locationItem.pathname);
+            }
+            
             return {
-                locations: [
+                locations: locations,
+                urlStack: urlStack
+            }
+        case DELETE_LOCATION:
+            //删除
+            locationItem = state.locations[action.locationIndex];
+            urlStack = [...state.urlStack];
+            locations = [
                 ...state.locations.slice(0, action.locationIndex),
                 ...state.locations.slice(action.locationIndex + 1)
-                ]
-            }
-        case ADD_LOCATION_COMPONENT:
+            ];
 
-            const addAction = action.locationItem;
-            const addActionParams = addAction.match ? addAction.match.params : "";
-
-            let locationIndex = -1
-
-            let addState = {
-                ...state,
-                locations: state.locations.map((item, index) => {
-                    if (item.keepParams && item.keepParams == addAction.keepParams) {
-                        const keepParamVal = item.match.params[addAction.keepParams];
-                        if (keepParamVal == addActionParams[addAction.keepParams]) {
-                            locationIndex = index;
-                            item.component = addAction.component;
-                            item.match = addAction.match;
-                            item.keepParams = addAction.keepParams;
-                            item.isClose = addAction.isClose;
-                            item.routeName = addAction.routeName;
-                            item.pathname = addAction.pathname;
-                        }
-                    } else if (item.pathname == addAction.pathname) {
-                        locationIndex = index;
-                        item.component = addAction.component;
-                        item.match = addAction.match;
-                        item.keepParams = addAction.keepParams;
-                        item.isClose = addAction.isClose;
-                        item.routeName = addAction.routeName;
-                    }
-                    return item
-                })
-            }
-
-            if (locationIndex < 0) {
-                addState = {
-                    ...state,
-                    locations: [
-                        ...state.locations, {
-                            pathname: addAction.pathname,
-                            component: addAction.component,
-                            match: addAction.match,
-                            keepParams: addAction.keepParams,
-                            isClose: addAction.isClose,
-                            routeName: addAction.routeName,
-                            isactive: true
-                        }
-                    ]
+            //修改路由序列
+            state.urlStack.map((urlItem, index) => {
+                if(urlItem == locationItem.pathname){
+                    urlStackIndex = index;
                 }
+            })
+
+			if(urlStackIndex >= 0){
+                urlStack.splice(urlStackIndex,1);
             }
 
-            return addState
+            //激活前一个页面
+            locations.map((item, index) => {
+                if(item.pathname == urlStack[urlStack.length - 1]){
+                    item.isactive = true;
+                }else{
+                    item.isactive = false;
+                }
+            })
+
+            return {
+                locations: locations,
+                urlStack: urlStack
+            }
+        case ADD_LOCATION:
+            //增加
+            locationItem = action.locationItem;
+            keepParam = locationItem.keepParam;
+            urlStack = [];
+            locations = [];
+            let haslocationItem = false;
+            state.locations.map((item, index) => {
+                const itemParams = item.match ? item.match.params : '';
+                const actionParam = locationItem.match ? locationItem.match.params : '';
+                let newItem = {...item};
+
+                if (item.keepParam && item.keepParam == locationItem.keepParam) {
+                    if (itemParams[keepParam] == actionParam[keepParam]) {
+                        newItem.pathname = locationItem.pathname;
+                    }
+                } 
+                
+                if ((item.keepParam && item.keepParam == locationItem.keepParam) || item.pathname == locationItem.pathname) {
+                    newItem.component = locationItem.component;
+                    newItem.match = locationItem.match;
+                    newItem.keepParam = locationItem.keepParam;
+                    newItem.isClose = locationItem.isClose;
+                    newItem.routeName = locationItem.routeName;
+                    haslocationItem = true;
+                }
+                locations.push(newItem);
+                urlStack.push(newItem.pathname);
+            })
+
+            if (!haslocationItem) {
+                locations.push({
+                    pathname: locationItem.pathname,
+                    component: locationItem.component,
+                    match: locationItem.match,
+                    keepParam: locationItem.keepParam,
+                    isClose: locationItem.isClose,
+                    routeName: locationItem.routeName,
+                    isactive: true
+                });
+                urlStack.push(locationItem.pathname)
+            }
+
+            return {
+                locations: locations,
+                urlStack: urlStack
+            }
         default:
             return state
     }
@@ -122,6 +167,6 @@ export const deleteLocation = (locationIndex) => {
     return {type: DELETE_LOCATION, locationIndex}
 }
 
-export const addLocationComponent = (locationItem) => {
-    return {type: ADD_LOCATION_COMPONENT, locationItem}
+export const addLocation = (locationItem) => {
+    return {type: ADD_LOCATION, locationItem}
 }

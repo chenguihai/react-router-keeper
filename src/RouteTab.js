@@ -1,15 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import {deleteLocation} from './RouterRedux'
+import {changeLocation, deleteLocation} from './RouterRedux'
 
 class RouteTab extends Component {
 
     _setScrollPosition(orientation){
+        //tabBox对象
         const routeTabBox = this.refs.routeTabBox;
+        //对象宽度
         const clientWidth = routeTabBox.clientWidth;
+        //滚动条宽度
         const scrollWidth = routeTabBox.scrollWidth;
+        //滚动条当前位置
         const scrollLeft = routeTabBox.scrollLeft;
+
         if(orientation == 'left'){
             if(scrollWidth > clientWidth && (scrollWidth - scrollLeft) <= clientWidth){
                 routeTabBox.scrollLeft = scrollLeft - clientWidth
@@ -29,13 +34,18 @@ class RouteTab extends Component {
         this._setScrollPosition('right');
     }
 
+    handleTabChange(item){
+        debugger
+        this.props.onChangeLocation(item);
+    }
+
     handleTabClose(index){
-        history.go(-1);
         this.props.onDeleteLocation(index);
     }
 
     renderClose(isClose, index) {
         if(isClose){
+            //关闭按钮
             return <span className='route-tab-close' title='关闭' onClick={this.handleTabClose.bind(this,index)}>×</span>
         }else{
             return null
@@ -54,7 +64,7 @@ class RouteTab extends Component {
                         const isClose = item.isClose ? item.isClose : false;
                         return (
                             <div className={classStr} key={index}>
-                                <a className='route-tab-title' href={url}>{item.routeName}</a>
+                                <a className='route-tab-title' onClick={this.handleTabChange.bind(this,item)}>{item.routeName}</a>
                                 {this.renderClose(isClose,index)}
                             </div>
                         )
@@ -74,6 +84,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         onDeleteLocation: (locationIndex) => {
             dispatch(deleteLocation(locationIndex))
+        },
+        onChangeLocation: (locationItem) => {
+            dispatch(changeLocation(locationItem))
         }
     }
 }

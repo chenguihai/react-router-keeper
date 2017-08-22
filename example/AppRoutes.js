@@ -10,7 +10,7 @@ const AppRoutes = (
         <RouteTab/>
         <Route path="/" component={TEST1} routeName='TEST1'/>
         <Route path="/test2|:params" component={TEST2} routeName='TEST2'/>
-        <Route path="/test3|:keep|:params|:routeName" component={TEST3} keepParams="keep" isClose={false}/>
+        <Route path="/test3|:keep|:params|:routeName" component={TEST3} keepParam="keep" isClose={false}/>
         <RouteDOM/>
     </section>
 );
