@@ -35,7 +35,6 @@ class RouteTab extends Component {
     }
 
     handleTabChange(item){
-        debugger
         this.props.onChangeLocation(item);
     }
 

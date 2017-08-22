@@ -52,8 +52,6 @@ export default function (state, action) {
                 locations.push(newItem);
             })
 
-            debugger
-
             //修改路由序列
             state.urlStack.map((urlItem, index) => {
                 if(urlItem == locationItem.pathname){
